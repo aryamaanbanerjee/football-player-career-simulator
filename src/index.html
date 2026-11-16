@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Career &amp; Transfer Simulator v14.1</title>
+  <style>
+/*__CSS__*/
+  </style>
+</head>
+<body>
+
+  <!-- ====================== SCREEN 1: CREATE PLAYER ====================== -->
+  <div class="setup" id="screenSetup">
+    <header class="setup-top">
+      <div class="brand">
+        <div class="brand-mark">FCS</div>
+        <div>
+          <div class="brand-title">Football Career &amp; Transfer Simulator</div>
+          <div class="brand-sub" id="brandSub"></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px">
+        <button class="btn" onclick="openAlbumStandalone()">📒 Album</button>
+        <button class="btn" onclick="openHofStandalone()">🏆 Hall of Fame</button>
+        <button class="btn" onclick="toggleSettings()" aria-label="Settings">⚙ Settings</button>
+      </div>
+    </header>
+    <main class="setup-wrap">
+      <div id="setupHero"></div>
+      <div id="slotsPanel"></div>
+      <div id="challengeCard"></div>
+      <div class="eyebrow">New career</div>
+      <h1 class="setup-title">Create your footballer</h1>
+      <p class="setup-sub">Pick how you want to play, then build your player. Every choice changes the numbers: position sets your stat curve, nation sets your international odds, and your agent changes how transfers go.</p>
+
+      <div class="mode-switch" id="modeSwitch"></div>
+
+      <div class="setup-grid">
+        <div class="panel">
+          <div class="panel-head"><span>Player details</span><button class="btn btn-ghost" style="padding:3px 9px" onclick="randomisePlayer()">🎲 Random player</button></div>
+          <div class="panel-body">
+            <div class="field">
+              <label class="field-label" for="inputPlayerName">Player name</label>
+              <input type="text" id="inputPlayerName" class="text-input" value="Alex Rivera" maxlength="28" oninput="updateSetupPreview()" />
+            </div>
+            <div class="field">
+              <div class="field-label"><span>How do you play?</span><span class="dim" style="text-transform:none; letter-spacing:0;">Pick a style, or a spot on the pitch</span></div>
+              <div id="styleChooser"></div>
+              <div class="pitch-wrap">
+                <div class="pitch" id="pitchSelector"></div>
+                <div class="pos-info" id="posInfo"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Origin confederation</div>
+              <div class="choice-grid c5" id="continentSelector"></div>
+            </div>
+            <div class="field">
+              <div class="field-label"><span>Nationality</span><span class="dim" style="text-transform:none; letter-spacing:0">Stronger nations win more, but are harder to get into</span></div>
+              <div class="nation-grid" id="nationSelector"></div>
+            </div>
+            <div class="field">
+              <div class="field-label"><span>Career goal</span><span class="dim" style="text-transform:none; letter-spacing:0">Optional · tracked on your Home screen</span></div>
+              <div id="goalChooser"></div>
+            </div>
+            <div id="careerOnlyFields">
+              <div class="field">
+                <div class="field-label"><span>Difficulty</span><span class="dim" style="text-transform:none; letter-spacing:0">Set for the whole career · shown in the Hall of Fame</span></div>
+                <div id="difficultyChooser"></div>
+              </div>
+              <div class="field">
+                <div class="field-label"><span>Detail level</span><span class="dim" style="text-transform:none; letter-spacing:0">How much you see each season · change it any time in Settings</span></div>
+                <div id="detailChooser"></div>
+              </div>
+              <div class="field">
+                <div class="field-label">Career length</div>
+                <div id="lengthChooser"></div>
+              </div>
+              <div id="fullLengthFields">
+              <div class="field">
+                <div class="field-label">Transfer window frequency</div>
+                <div class="choice-grid c3" id="intervalSelector"></div>
+              </div>
+              <div class="field">
+                <div class="field-label">Target retirement age</div>
+                <div class="range-row">
+                  <input type="range" id="inputRetireAge" min="30" max="42" value="35" oninput="updateSetupPreview()" aria-label="Target retirement age" />
+                  <span class="age-big" id="retireAgeDisplay">35</span>
+                </div>
+              </div>
+              </div>
+              <details class="adv" id="advSettings">
+                <summary>Advanced: agent, scouting difficulty, career code</summary>
+                <div class="field">
+                  <div class="field-label">Your agent</div>
+                  <div class="choice-grid c3" id="agentSelector"></div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Scouting difficulty</div>
+                  <div class="choice-grid c3" id="scoutSelector"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="inputCode"><span>Career code</span><span class="dim" style="text-transform:none; letter-spacing:0">Same code + same choices = same career</span></label>
+                  <div class="code-row"><input type="text" id="inputCode" class="text-input" placeholder="Paste a friend's code, e.g. ST-EU-ENG-2-35-B-C-K7Q2M9" /><button class="btn" onclick="applyCareerCode()">Load</button></div>
+                  <div class="dim" style="font-size:11.5px; margin-top:6px" id="seedNote"></div>
+                </div>
+              </details>
+            </div>
+            <div class="quick-note hidden" id="quickNote">⚡ <b>Quick mode:</b> 3-year windows, retire at 34 — about 6 decisions. Offers come as simple cards, there's a “let my agent decide” button, and results play as a short highlights reel. No negotiations or mid-season choices.</div>
+            <button class="btn btn-go btn-lg" style="width:100%;" id="btnStart" onclick="startNewCareer()">Start career at age 17 ▸</button>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="card-preview" id="cardPreview"></div>
+          <div class="panel">
+            <div class="panel-head">Career blueprint</div>
+            <div class="panel-body" id="blueprint"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================== SCREEN 2: GAME SHELL ====================== -->
+  <div class="app hidden" id="screenApp">
+    <header class="topbar" id="topbar">
+      <div class="tb-crest" id="tbCrest"></div>
+      <div class="tb-id">
+        <div class="tb-club" id="tbClub"></div>
+        <div class="tb-player" id="tbPlayer"></div>
+      </div>
+      <div class="tb-center">
+        <div class="tb-date" id="tbDate"></div>
+        <div class="tb-status" id="tbStatus"></div>
+      </div>
+      <div class="tb-actions">
+        <button class="btn icon-btn" id="btnSound" onclick="toggleSound()" aria-label="Toggle sound" title="Sound">🔇</button>
+        <button class="btn icon-btn" onclick="startTour(true)" aria-label="Show tutorial" title="Tutorial">?</button>
+        <button class="btn icon-btn" onclick="toggleSettings()" aria-label="Settings" title="Settings">⚙</button>
+        <button class="btn btn-go btn-continue" id="btnContinue" onclick="handleContinue()">Continue ▸</button>
+      </div>
+    </header>
+    <nav class="sidebar" id="sidebar" aria-label="Sections"></nav>
+    <main class="main" id="main"></main>
+    <nav class="bottomnav" id="bottomnav" aria-label="Main navigation"></nav>
+  </div>
+
+  <!-- ====================== SCREEN 3: LEGACY ====================== -->
+  <div class="legacy hidden" id="screenLegacy"></div>
+
+  <!-- ====================== OVERLAYS ====================== -->
+  <div class="review hidden" id="review" role="dialog" aria-modal="true" aria-label="Season review">
+    <div class="rv-top">
+      <div class="rv-title" id="rvTitle">Season review</div>
+      <div class="rv-dots" id="rvDots"></div>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-ghost" id="rvSpeed" onclick="toggleReviewSpeed()">Speed 1×</button>
+        <button class="btn" id="rvSkip" onclick="skipReview()">Skip to report ⏭</button>
+      </div>
+    </div>
+    <div class="rv-stage" id="rvStage"></div>
+  </div>
+  <div class="ticker" id="toasts" aria-live="polite"></div>
+  <div id="srLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div class="modal hidden" id="negoModal" role="dialog" aria-modal="true" onclick="if (event.target === this) closeNegotiation();"><div class="modal-card" id="negoBody"></div></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div id="settingsPop" class="settings-pop hidden" role="dialog" aria-label="Settings"></div>
+  <div id="tourLayer" class="hidden"><div class="tour-spot" id="tourSpot"></div><div class="tour-bubble" id="tourBubble"></div></div>
+  <div class="review hidden" id="hofModal" style="background: rgba(5,7,10,.88); backdrop-filter: blur(4px);" onclick="if (event.target === this) closeHofStandalone();">
+    <div style="max-width: 1040px; width: calc(100% - 28px); margin: 50px auto; overflow-y:auto">
+      <div class="panel">
+        <div class="panel-head"><span>Hall of Fame · top 50 careers</span><button class="btn btn-ghost" onclick="closeHofStandalone()">✕ Close</button></div>
+        <div class="panel-body" id="hofModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+//__JS__
+  </script>
+</body>
+</html>

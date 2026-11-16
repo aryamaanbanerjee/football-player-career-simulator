@@ -1,0 +1,13 @@
+{
+  "name": "football-career-simulator",
+  "version": "14.1.0",
+  "private": true,
+  "description": "Football Career & Transfer Simulator — single-file browser game built from modular sources.",
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node --test tests/invariants.test.cjs tests/stories.test.cjs tests/matches.test.cjs tests/v10.test.cjs tests/v11.test.cjs tests/v12.test.cjs tests/v13.test.cjs tests/v14.test.cjs",
+    "stories": "node tests/story-coverage.cjs 300",
+    "balance": "node tests/balance.cjs 60 agent",
+    "balance:random": "node tests/balance.cjs 60 random"
+  }
+}
