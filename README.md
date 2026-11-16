@@ -2,7 +2,7 @@
 
 Live a whole football career, one summer decision at a time. Pick a position, a continent and a nation, start at 17 in an academy, and decide at every transfer window: stay, move, go on loan, negotiate. The game plays out each season match by match, and the career ends with a legacy score, a Hall of Fame entry and a shareable career card.
 
-**Play it:** `https://YOUR-USERNAME.github.io/football-career-simulator/` (works once GitHub Pages is switched on; see below)
+**Play it:** `https://aryamaanbanerjee.github.io/football-career-simulator/` (works once GitHub Pages is switched on; see below)
 
 It's a single web page with no server and no accounts. Saves stay in your own browser.
 
